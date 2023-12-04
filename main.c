@@ -11,14 +11,19 @@ int hash_function(char *str) {
     i += abs(str[0] - str[1]);
     return i % CAP;
 }
+// define hashtable item
 struct ht_item {
     char *key;
     char *value;
 };
+
+// define linked list
 struct ll {
     struct ht_item *item;
     struct ll *next;
 };
+
+// define hashtable
 struct ht {
     struct ht_item **items;
     int size;
@@ -26,6 +31,7 @@ struct ht {
     struct ll **buckets;
 };
 
+// allocate memory for collision buckets and initialize all to null
 struct ll **create_buckets(struct ht *table) {
     struct ll **buckets =
         (struct ll **)calloc(table->size, sizeof(struct ll *));
@@ -35,28 +41,34 @@ struct ll **create_buckets(struct ht *table) {
     return buckets;
 }
 
+// allocate memory for linked list
 struct ll *allocate_ll(void) {
     struct ll *list = (struct ll *)malloc(sizeof(struct ll));
     return list;
 }
 
+// function to insert in linked list buckets
 struct ll *insert_ll(struct ll *list, struct ht_item *item) {
-    if (!list) {
-        struct ll *head = allocate_ll();
-        head->item = item;
-        head->next = NULL;
-        list = head;
-        return list;
-    } else if (list->next == NULL) {
+    // if (!list) {
+    //     printf("here");
+    //     struct ll *head = allocate_ll();
+    //     head->item = item;
+    //     head->next = NULL;
+    //     list = head;
+    //     return list;
+    // } else
+
+    // has 1 element already
+    if (list->next == NULL) {
         struct ll *node = allocate_ll();
         node->item = item;
         node->next = NULL;
         list->next = node;
-        // printf("%s",list->next->item->key);
         return list;
     }
     struct ll *temp = list;
 
+    // traverse till last element and insert
     while (temp->next->next) {
         temp = temp->next;
     }
@@ -67,6 +79,7 @@ struct ll *insert_ll(struct ll *list, struct ht_item *item) {
     return list;
 }
 
+// allocate memory for hashtable item
 struct ht_item *create_item(char *key, char *value) {
     struct ht_item *item = (struct ht_item *)malloc(sizeof(struct ht_item));
     item->key = strdup(key);
@@ -74,7 +87,7 @@ struct ht_item *create_item(char *key, char *value) {
 
     return item;
 }
-
+// allocate memory for hashtable and initialize hashtable items to null
 struct ht *create_hashtable(int size) {
     struct ht *table = (struct ht *)malloc(sizeof(struct ht));
     table->size = size;
@@ -105,21 +118,22 @@ void handle_collision(struct ht *table, int index, struct ht_item *item) {
 char *search(struct ht *table, char *key) {
     int index = hash_function(key);
     struct ht_item *item = table->items[index];
-    struct ll *head = table->buckets[index];
+    // struct ll *head = table->buckets[index];
     if (item != NULL) {
         if (strcmp(item->key, key) == 0) {
             return item->value;
-            if (head == NULL) return NULL;
+            // if (head == NULL) return NULL;
 
-            item = head->item;
-            head = head->next;
+            // item = head->item;
+            // head = head->next;
         }
     }
     return NULL;
 }
 
+// function to insert in hashtable
 void insert(struct ht *table, char *key, char *value) {
-    int index = hash_function(key);
+    int index = hash_function(key); // get the index from hashfunction
     struct ht_item *item = create_item(key, value);
     struct ht_item *current_item = table->items[index];
     if (current_item == NULL) {
@@ -143,7 +157,6 @@ void insert(struct ht *table, char *key, char *value) {
             return;
         } else {
             // collision
-
             handle_collision(table, index, item);
             printf("Collision Inserted %s at → %d\n", key, index);
             return;
@@ -151,6 +164,7 @@ void insert(struct ht *table, char *key, char *value) {
     }
 }
 
+// display the hashtable
 void print_table(struct ht *table) {
     printf(
         "\nHash "
@@ -173,15 +187,16 @@ void print_table(struct ht *table) {
         "\n╚══════════════════════════════════════════════════════════════════╝"
         "\n");
 }
-void print_search(struct ht *table, char *key) {
-    char *val = search(table, key);
-    if (val == NULL) {
-        printf("Key:%s does not exist\n", key);
-        return;
-    } else {
-        printf("Key:%s, Value:%s\n", key, val);
-    }
-}
+
+// void print_search(struct ht *table, char *key) {
+//     char *val = search(table, key);
+//     if (val == NULL) {
+//         printf("Key:%s does not exist\n", key);
+//         return;
+//     } else {
+//         printf("Key:%s, Value:%s\n", key, val);
+//     }
+// }
 int main(void) {
     struct ht *table = create_hashtable(CAP);
     insert(table, (char *)"Kartik", (char *)"21");
@@ -198,4 +213,5 @@ int main(void) {
     insert(table, (char *)"Sakshi", (char *)"10");
     insert(table, (char *)"Jatin", (char *)"23");
     print_table(table);
+    // print_search(table, (char *)"Sakshi");
 }
