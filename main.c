@@ -199,6 +199,7 @@ void print_table(struct ht *table) {
 // }
 int main(void) {
     struct ht *table = create_hashtable(CAP);
+    insert(table, (char *)"Jatin", (char *)"23");
     insert(table, (char *)"Kartik", (char *)"21");
     insert(table, (char *)"Pranav", (char *)"24");
     insert(table, (char *)"Mayank", (char *)"20");
@@ -211,7 +212,7 @@ int main(void) {
     insert(table, (char *)"Harshita", (char *)"23");
     insert(table, (char *)"Saksham", (char *)"19");
     insert(table, (char *)"Sakshi", (char *)"10");
-    insert(table, (char *)"Jatin", (char *)"23");
+    
     print_table(table);
     // print_search(table, (char *)"Sakshi");
 }
